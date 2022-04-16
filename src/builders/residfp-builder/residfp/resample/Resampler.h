@@ -81,6 +81,39 @@ public:
     virtual void reset() = 0;
 };
 
+class SilentResampler : public Resampler
+{
+	const int cyclesPerSample;
+	int sampleOffset;
+public:
+	SilentResampler(double clockFrequency, double samplingFrequency) :
+		cyclesPerSample(static_cast<int>(clockFrequency / samplingFrequency * 1024.)),
+		sampleOffset(0)
+	{
+	}
+	bool input(int sample)
+	{
+		bool ready = false;
+
+		if (sampleOffset < 1024)
+		{
+			ready = true;
+			sampleOffset += cyclesPerSample;
+		}
+
+		sampleOffset -= 1024;
+
+		return ready;
+	}
+
+	int output() const { return 0; }
+
+	void reset()
+	{
+		sampleOffset = 0;
+	}
+};
+
 } // namespace reSIDfp
 
 #endif

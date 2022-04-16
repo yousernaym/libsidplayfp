@@ -459,6 +459,9 @@ void SID::setSamplingParameters(double clockFrequency, SamplingMethod method, do
     case RESAMPLE:
         resampler.reset(TwoPassSincResampler::create(clockFrequency, samplingFrequency, highestAccurateFrequency));
         break;
+	case SILENT:
+		resampler.reset(new SilentResampler(clockFrequency, samplingFrequency));
+		break;
 
     default:
         throw SIDError("Unknown sampling method");

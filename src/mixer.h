@@ -31,6 +31,8 @@
 
 #include <vector>
 
+struct NoteState;
+
 namespace libsidplayfp
 {
 
@@ -74,7 +76,7 @@ private:
     int m_fastForwardFactor;
 
     // Mixer settings
-    short         *m_sampleBuffer;
+    float         *m_sampleBuffer;
     uint_least32_t m_sampleCount;
     uint_least32_t m_sampleIndex;
 
@@ -146,7 +148,7 @@ public:
     /**
      * Do the mixing.
      */
-    void doMix();
+    void doMix(bool disableAudio);
 
     /**
      * This clocks the SID chips to the present moment, if they aren't already.
@@ -164,7 +166,7 @@ public:
      * @param buffer output buffer
      * @param count size of the buffer in samples
      */
-    void begin(short *buffer, uint_least32_t count);
+    void begin(float *buffer, uint_least32_t count);
 
     /**
      * Remove all SIDs from the mixer.
@@ -218,6 +220,8 @@ public:
      * Get the number of samples generated up to now.
      */
     uint_least32_t samplesGenerated() const { return m_sampleIndex; }
+
+	void getNoteState(NoteState &output, int channel) const;
 };
 
 }

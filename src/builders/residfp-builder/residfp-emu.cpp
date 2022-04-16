@@ -44,9 +44,9 @@ const char* ReSIDfp::getCredits()
     {
         // Setup credits
         std::ostringstream ss;
-        ss << "ReSIDfp V" << VERSION << " Engine:\n";
+        ss << "ReSIDfp V" << "VERSION" << " Engine:\n";
         ss << "\t(C) 1999-2002 Simon White\n";
-        ss << "MOS6581 (SID) Emulation (ReSIDfp V" << residfp_version_string << "):\n";
+        ss << "MOS6581 (SID) Emulation (ReSIDfp V" << "2.0.5" << "):\n";
         ss << "\t(C) 1999-2002 Dag Lem\n";
         ss << "\t(C) 2005-2011 Antti S. Lankila\n";
         ss << "\t(C) 2010-2015 Leandro Nini\n";
@@ -104,7 +104,7 @@ void ReSIDfp::clock()
 {
     const event_clock_t cycles = eventScheduler->getTime(EVENT_CLOCK_PHI1) - m_accessClk;
     m_accessClk += cycles;
-    m_bufferpos += m_sid.clock(cycles, m_buffer+m_bufferpos);
+    m_bufferpos += m_sid.clock((int)cycles, m_buffer+m_bufferpos, m_disableAudio);
 }
 
 void ReSIDfp::filter(bool enable)
@@ -116,19 +116,24 @@ void ReSIDfp::sampling(float systemclock, float freq,
         SidConfig::sampling_method_t method, bool)
 {
     reSIDfp::SamplingMethod sampleMethod;
-    switch (method)
-    {
-    case SidConfig::INTERPOLATE:
-        sampleMethod = reSIDfp::DECIMATE;
-        break;
-    case SidConfig::RESAMPLE_INTERPOLATE:
-        sampleMethod = reSIDfp::RESAMPLE;
-        break;
-    default:
-        m_status = false;
-        m_error = ERR_INVALID_SAMPLING;
-        return;
-    }
+    if (m_disableAudio)
+		sampleMethod = reSIDfp::SILENT;
+	else
+	{
+	    switch (method)
+	    {
+	    case SidConfig::INTERPOLATE:
+	        sampleMethod = reSIDfp::DECIMATE;
+	        break;
+	    case SidConfig::RESAMPLE_INTERPOLATE:
+	        sampleMethod = reSIDfp::RESAMPLE;
+	        break;
+	    default:
+	        m_status = false;
+	        m_error = ERR_INVALID_SAMPLING;
+	        return;
+	    }
+	}
 
     try
     {
@@ -167,6 +172,11 @@ void ReSIDfp::model(SidConfig::sid_model_t model, bool digiboost)
 
     m_sid.setChipModel(chipModel);
     m_status = true;
+}
+
+void ReSIDfp::getNoteState(NoteState &state, int channel) const
+{
+	m_sid.getVoice(channel)->getNoteState(state);
 }
 
 }

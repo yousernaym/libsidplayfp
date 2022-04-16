@@ -36,6 +36,7 @@
 
 
 class sidbuilder;
+struct NoteState;
 
 namespace libsidplayfp
 {
@@ -78,6 +79,7 @@ protected:
 
     std::string m_error;
 
+	bool m_disableAudio = false;
 public:
     sidemu(sidbuilder *builder) :
         m_builder(builder),
@@ -127,6 +129,7 @@ public:
     virtual void sampling(float systemfreq SID_UNUSED, float outputfreq SID_UNUSED,
         SidConfig::sampling_method_t method SID_UNUSED, bool fast SID_UNUSED) {}
 
+	virtual void getNoteState(NoteState &state, int channel) const = 0;
     /**
      * Get a detailed error message.
      */
@@ -148,6 +151,7 @@ public:
      * Get the buffer.
      */
     short *buffer() const { return m_buffer; }
+ 	void disableAudio(bool b) { m_disableAudio = b; }
 };
 
 }

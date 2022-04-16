@@ -40,6 +40,16 @@ namespace libsidplayfp
     class Player;
 }
 
+struct NoteState
+{
+	int frequency;
+	bool gate;
+	int volume;
+	bool gateChanged;
+	int waveform;
+};
+
+
 /**
  * sidplayfp
  */
@@ -108,7 +118,7 @@ public:
      *         and #isPlaying() is true an error occurred, use #error()
      *         to get a detailed message.
      */
-    uint_least32_t play(short *buffer, uint_least32_t count);
+    uint_least32_t play(float *buffer, uint_least32_t count);
 
     /**
      * Check if the engine is playing or stopped.
@@ -191,6 +201,10 @@ public:
      * @since 2.2
      */
     bool getSidStatus(unsigned int sidNum, uint8_t regs[32]);
+	/**
+	* Get state of channel in SID chip
+	*/
+	void getNoteState(NoteState &output, int channel) const;
 };
 
 #endif // SIDPLAYFP_H

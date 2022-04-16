@@ -24,8 +24,8 @@
 
 #include <cassert>
 #include <algorithm>
-
-#include "sidemu.h"
+#include "residfp-emu.h"
+//#include "sidemu.h"
 
 
 namespace libsidplayfp
@@ -71,9 +71,9 @@ void Mixer::resetBufs()
     std::for_each(m_chips.begin(), m_chips.end(), bufferPos(0));
 }
 
-void Mixer::doMix()
+void Mixer::doMix(bool disableAudio)
 {
-    short *buf = m_sampleBuffer + m_sampleIndex;
+    float *buf = m_sampleBuffer + m_sampleIndex;
 
     // extract buffer info now that the SID is updated.
     // clock() may update bufferpos.
@@ -96,29 +96,35 @@ void Mixer::doMix()
 
         // This is a crude boxcar low-pass filter to
         // reduce aliasing during fast forward.
-        for (size_t k = 0; k < m_buffers.size(); k++)
-        {
-            int_least32_t sample = 0;
-            const short *buffer = m_buffers[k] + i;
-            for (int j = 0; j < m_fastForwardFactor; j++)
-            {
-                sample += buffer[j];
-            }
-
-            m_iSamples[k] = sample / m_fastForwardFactor;
-        }
+        if (!disableAudio)
+		{
+		   	for (size_t k = 0; k < m_buffers.size(); k++)
+	        {
+	            int_least32_t sample = 0;
+	            const short *buffer = m_buffers[k] + i;
+	            for (int j = 0; j < m_fastForwardFactor; j++)
+	            {
+	                sample += buffer[j];
+	            }
+	
+	            m_iSamples[k] = sample / m_fastForwardFactor;
+	        }
+    	}
 
         // increment i to mark we ate some samples, finish the boxcar thing.
         i += m_fastForwardFactor;
 
-        const int dither = triangularDithering();
+        const int dither = disableAudio ? 0 : triangularDithering();
 
         const unsigned int channels = m_stereo ? 2 : 1;
         for (unsigned int ch = 0; ch < channels; ch++)
         {
-            const int_least32_t tmp = ((this->*(m_mix[ch]))() * m_volume[ch] + dither) / VOLUME_MAX;
-            assert(tmp >= -32768 && tmp <= 32767);
-            *buf++ = static_cast<short>(tmp);
+        	 if (!disableAudio)
+        	 {
+            	const float tmp = ((float)(this->*(m_mix[ch]))() * m_volume[ch] + dither) / VOLUME_MAX;
+            	assert(tmp >= -32768 && tmp <= 32767);
+            	*buf++ = tmp / 32768.f;
+            }
             m_sampleIndex++;
         }
     }
@@ -129,7 +135,7 @@ void Mixer::doMix()
     std::for_each(m_chips.begin(), m_chips.end(), bufferPos(samplesLeft));
 }
 
-void Mixer::begin(short *buffer, uint_least32_t count)
+void Mixer::begin(float *buffer, uint_least32_t count)
 {
     m_sampleIndex  = 0;
     m_sampleCount  = count;
@@ -201,6 +207,11 @@ void Mixer::setVolume(int_least32_t left, int_least32_t right)
     m_volume.clear();
     m_volume.push_back(left);
     m_volume.push_back(right);
+}
+
+void Mixer::getNoteState(NoteState &output, int channel) const
+{
+	m_chips[0]->getNoteState(output, channel);
 }
 
 }

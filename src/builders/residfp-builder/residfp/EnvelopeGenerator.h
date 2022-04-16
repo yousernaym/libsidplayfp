@@ -89,6 +89,9 @@ private:
     /// Gate bit
     bool gate;
 
+	//true if gate changed since last isPlaying() call.
+	bool gateChanged = false;
+	
     ///
     bool resetLfsr;
 
@@ -203,6 +206,8 @@ public:
      * @return envelope counter value
      */
     unsigned char readENV() const { return env3; }
+	bool getGate() { return gate; }
+	bool getGateChanged() { bool temp = gateChanged; gateChanged = false; return temp; }
 };
 
 } // namespace reSIDfp

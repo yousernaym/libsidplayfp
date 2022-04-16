@@ -291,6 +291,8 @@ public:
      * Read sync value.
      */
     bool readSync() const { return sync; }
+
+    int readWaveform() const { return waveform; }
 };
 
 } // namespace reSIDfp

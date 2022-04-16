@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- * Copyright 2011-2021 Leandro Nini <drfiemost@users.sourceforge.net>
+ * Copyright 2011-2019 Leandro Nini <drfiemost@users.sourceforge.net>
  * Copyright 2007-2010 Antti Lankila
  * Copyright 2000-2001 Simon White
  *
@@ -56,7 +56,7 @@ void sidplayfp::stop()
     sidplayer.stop();
 }
 
-uint_least32_t sidplayfp::play(short *buffer, uint_least32_t count)
+uint_least32_t sidplayfp::play(float *buffer, uint_least32_t count)
 {
     return sidplayer.play(buffer, count);
 }
@@ -125,4 +125,9 @@ uint_least16_t sidplayfp::getCia1TimerA() const
 bool sidplayfp::getSidStatus(unsigned int sidNum, uint8_t regs[32])
 {
     return sidplayer.getSidStatus(sidNum, regs);
+}
+
+void sidplayfp::getNoteState(NoteState &output, int channel) const
+{
+	sidplayer.getNoteState(output, channel);
 }

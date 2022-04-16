@@ -75,7 +75,8 @@ public:
     typedef enum
     {
         INTERPOLATE,            ///< Interpolation
-        RESAMPLE_INTERPOLATE    ///< Resampling
+        RESAMPLE_INTERPOLATE,   ///< Resampling
+        SILENT
     } sampling_method_t;
 
 public:
@@ -170,6 +171,11 @@ public:
      */
     bool fastSampling;
 
+	/**
+	 * Fastest possible processing for note extraction only.
+	 */
+	bool disableAudio;
+	
     /**
      * Compare two config objects.
      *

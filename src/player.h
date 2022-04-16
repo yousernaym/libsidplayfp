@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- * Copyright 2011-2021 Leandro Nini <drfiemost@users.sourceforge.net>
+ * Copyright 2011-2019 Leandro Nini <drfiemost@users.sourceforge.net>
  * Copyright 2007-2010 Antti Lankila
  * Copyright 2000-2001 Simon White
  *
@@ -45,6 +45,7 @@
 class SidTune;
 class SidInfo;
 class sidbuilder;
+struct NoteState;
 
 
 namespace libsidplayfp
@@ -123,8 +124,7 @@ private:
      * @param sampling the sampling method to use
      * @param fastSampling true to enable fast low quality resampling (only for reSID)
      */
-    void sidParams(double cpuFreq, int frequency,
-                    SidConfig::sampling_method_t sampling, bool fastSampling);
+     void sidParams(double cpuFreq, int frequency, SidConfig::sampling_method_t sampling, bool fastSampling, bool disableAudio);
 
     inline void run(unsigned int events);
 
@@ -142,7 +142,7 @@ public:
 
     bool load(SidTune *tune);
 
-    uint_least32_t play(short *buffer, uint_least32_t samples);
+    uint_least32_t play(float *buffer, uint_least32_t samples);
 
     bool isPlaying() const { return m_isPlaying != STOPPED; }
 
@@ -163,8 +163,11 @@ public:
     void setChargen(const uint8_t* rom);
 
     uint_least16_t getCia1TimerA() const { return m_c64.getCia1TimerA(); }
-
     bool getSidStatus(unsigned int sidNum, uint8_t regs[32]);
+	void getNoteState(NoteState &output, int channel) const
+	{
+		m_mixer.getNoteState(output, channel);
+	}
 };
 
 }

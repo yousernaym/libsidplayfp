@@ -246,7 +246,7 @@ public:
      * @param buf audio output buffer
      * @return number of samples produced
      */
-    int clock(unsigned int cycles, short* buf);
+    int clock(unsigned int cycles, short* buf, bool disableAudio);
 
     /**
      * Clock SID forward with no audio production.
@@ -280,6 +280,9 @@ public:
      * @param enable false to turn off filter emulation
      */
     void enableFilter(bool enable);
+
+    std::unique_ptr<Voice>& getVoice(int index) { return voice[index]; }
+
 };
 
 } // namespace reSIDfp
@@ -323,7 +326,7 @@ int SID::output() const
 
 
 RESID_INLINE
-int SID::clock(unsigned int cycles, short* buf)
+int SID::clock(unsigned int cycles, short* buf, bool disableAudio)
 {
     ageBusValue(cycles);
     int s = 0;
@@ -336,10 +339,13 @@ int SID::clock(unsigned int cycles, short* buf)
         {
             for (unsigned int i = 0; i < delta_t; i++)
             {
-                // clock waveform generators
-                voice[0]->wave()->clock();
-                voice[1]->wave()->clock();
-                voice[2]->wave()->clock();
+            	if (!disableAudio)
+				{
+	                // clock waveform generators
+                	voice[0]->wave()->clock();
+                	voice[1]->wave()->clock();
+                	voice[2]->wave()->clock();
+                }
 
                 // clock envelope generators
                 voice[0]->envelope()->clock();

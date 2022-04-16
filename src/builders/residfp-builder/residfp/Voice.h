@@ -28,7 +28,7 @@
 #include "siddefs-fp.h"
 #include "WaveformGenerator.h"
 #include "EnvelopeGenerator.h"
-
+#include "sidplayfp.h"
 #include "sidcxx11.h"
 
 namespace reSIDfp
@@ -95,6 +95,14 @@ public:
         waveformGenerator->reset();
         envelopeGenerator->reset();
     }
+	void getNoteState(NoteState &state)
+	{
+		state.gateChanged = envelopeGenerator->getGateChanged();
+		state.gate = envelopeGenerator->getGate();
+		state.volume = (int)envelopeGenerator->output();
+		state.frequency = waveformGenerator->readFreq();
+		state.waveform = waveformGenerator->readWaveform();
+	}
 };
 
 } // namespace reSIDfp
