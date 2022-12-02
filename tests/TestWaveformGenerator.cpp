@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- *  Copyright (C) 2014-2017 Leandro Nini
+ *  Copyright (C) 2014-2022 Leandro Nini
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,14 @@ using namespace UnitTest;
 SUITE(WaveformGenerator)
 {
 
+TEST(TestShiftRegisterInitValue)
+{
+    reSIDfp::WaveformGenerator generator;
+    generator.reset();
+
+    CHECK_EQUAL(0x3fffff, generator.shift_register);
+}
+
 TEST(TestClockShiftRegister)
 {
     reSIDfp::WaveformGenerator generator;
@@ -73,31 +81,37 @@ TEST(TestWriteShiftRegister)
 
 TEST(TestSetTestBit)
 {
-    matrix_t* tables = reSIDfp::WaveformCalculator::getInstance()->buildTable(reSIDfp::MOS6581);
+    matrix_t* wavetables = reSIDfp::WaveformCalculator::getInstance()->getWaveTable();
+    matrix_t* tables = reSIDfp::WaveformCalculator::getInstance()->buildPulldownTable(reSIDfp::MOS6581);
 
     reSIDfp::WaveformGenerator generator;
     generator.reset();
     generator.shift_register = 0x35555e;
-    generator.setWaveformModels(tables);
+    generator.setWaveformModels(wavetables);
+    generator.setPulldownModels(tables);
 
     generator.writeCONTROL_REG(0x08); // set test bit
+    generator.clock();
     generator.writeCONTROL_REG(0x00); // unset test bit
+    generator.clock();
 
     CHECK_EQUAL(0x9f0, generator.noise_output);
 }
 
 TEST(TestNoiseWriteBack1)
 {
-    matrix_t* tables = reSIDfp::WaveformCalculator::getInstance()->buildTable(reSIDfp::MOS6581);
-    float dac[4096];
+    matrix_t* wavetables = reSIDfp::WaveformCalculator::getInstance()->getWaveTable();
+    matrix_t* tables = reSIDfp::WaveformCalculator::getInstance()->buildPulldownTable(reSIDfp::MOS6581);
 
     reSIDfp::WaveformGenerator modulator;
 
     reSIDfp::WaveformGenerator generator;
-    generator.setWaveformModels(tables);
-    generator.setDAC(dac);
+    generator.setModel(true); //6581
+    generator.setWaveformModels(wavetables);
+    generator.setPulldownModels(tables);
     generator.reset();
 
+    // switch from noise to noise+triangle
     generator.writeCONTROL_REG(0x88);
     generator.clock();
     generator.output(&modulator);

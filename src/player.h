@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- * Copyright 2011-2019 Leandro Nini <drfiemost@users.sourceforge.net>
+ * Copyright 2011-2022 Leandro Nini <drfiemost@users.sourceforge.net>
  * Copyright 2007-2010 Antti Lankila
  * Copyright 2000-2001 Simon White
  *
@@ -40,6 +40,9 @@
 #  include "config.h"
 #endif
 
+#ifdef HAVE_CXX11
+#  include <atomic>
+#endif
 #include <vector>
 
 class SidTune;
@@ -80,7 +83,11 @@ private:
     /// Error message
     const char *m_errorString;
 
+#ifndef HAVE_CXX11
     volatile state_t m_isPlaying;
+#else
+    std::atomic<state_t> m_isPlaying;
+#endif
 
     sidrandom m_rand;
 
@@ -147,8 +154,6 @@ public:
     bool isPlaying() const { return m_isPlaying != STOPPED; }
 
     void stop();
-
-    uint_least32_t time() const { return m_c64.getTime(); }
 
     uint_least32_t timeMs() const { return m_c64.getTimeMs(); }
 
