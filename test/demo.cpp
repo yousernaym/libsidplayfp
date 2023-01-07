@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- * Copyright 2012-2014 Leandro Nini <drfiemost@users.sourceforge.net>
+ * Copyright 2012-2023 Leandro Nini <drfiemost@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@
 #include <sidplayfp/builders/residfp.h>
 
 /**
+ * Works on UNIX using OSS
+ *
  * Compile with
  *     g++ `pkg-config --cflags libsidplayfp` `pkg-config --libs libsidplayfp` demo.cpp
  */
@@ -152,13 +154,18 @@ int main(int, char* argv[])
     int bufferSize;
     ioctl(handle, SNDCTL_DSP_GETBLKSIZE, &bufferSize);
 
-    int bufferSamples = bufferSize / sizeof(short);
+    uint_least32_t bufferSamples = static_cast<uint_least32_t>(bufferSize) / sizeof(short);
 
     // Play
     std::vector<short> buffer(bufferSamples);
     for (int i=0; i<1000; i++)
     {
-        m_engine.play(&buffer.front(), bufferSamples);
+        uint_least32_t res = m_engine.play(&buffer.front(), bufferSamples);
+        if (!m_engine.isPlaying() || (res < bufferSamples))
+        {
+            std::cerr <<  m_engine.error() << std::endl;
+            break;
+        }
         ::write(handle, &buffer.front(), bufferSize);
     }
 
