@@ -70,20 +70,12 @@ dnl Checks for non-standard functions.
 
 AC_CHECK_DECL(
     [strcasecmp],
-    [AC_CHECK_FUNCS([strcasecmp])],
-    [AC_CHECK_DECL(
-        [stricmp],
-        [AC_CHECK_FUNCS([stricmp])]
-    )]
+    [AC_CHECK_FUNCS([strcasecmp])]
 )
 
 AC_CHECK_DECL(
     [strncasecmp],
-    [AC_CHECK_FUNCS([strncasecmp])],
-    [AC_CHECK_DECL(
-        [strnicmp],
-        [AC_CHECK_FUNCS([strnicmp])]
-    )]
+    [AC_CHECK_FUNCS([strncasecmp])]
 )
 
 
@@ -98,7 +90,7 @@ dnl libtool-style version-info number
 # Increase the age value only if the changes made to the ABI are backward compatible.
 
 LIBSIDPLAYCUR=9
-LIBSIDPLAYREV=25
+LIBSIDPLAYREV=26
 LIBSIDPLAYAGE=3
 LIBSIDPLAYVERSION=$LIBSIDPLAYCUR:$LIBSIDPLAYREV:$LIBSIDPLAYAGE
 
