@@ -21,11 +21,10 @@
  * declared here (declaring the lower ones too triggers C4005 redefinition). */
 #define HAVE_CXX17 1
 
-/* Package identification, used by SidInfoImpl.h. */
-#define PACKAGE         "libsidplayfp"
-#define PACKAGE_NAME    "libsidplayfp"
-#define VERSION         "3.0.1"
-#define PACKAGE_VERSION "3.0.1"
-#define PACKAGE_URL     "https://github.com/libsidplayfp/libsidplayfp/"
+/* Package identification (PACKAGE*, VERSION; used by SidInfoImpl.h). Generated
+ * from config_version.h.in into config_version.h by the GenerateBuildHeaders
+ * target in libsidplayfp.vcxproj, with the version read from configure.ac — so a
+ * version bump needs no edit here. */
+#include "config_version.h"
 
 #endif /* VM_LIBSIDPLAYFP_CONFIG_H */

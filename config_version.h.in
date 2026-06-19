@@ -1,0 +1,15 @@
+/*
+ * Package identification for the Visual Music MSVC build of libsidplayfp.
+ *
+ * Generated from this template into config_version.h by the GenerateBuildHeaders
+ * target in libsidplayfp.vcxproj; the values come from configure.ac. config.h
+ * includes the result. This keeps the PACKAGE and VERSION macros in sync with
+ * the submodule automatically, so a version bump needs no hand-edits here.
+ *
+ * Used by SidInfoImpl.h.
+ */
+#define PACKAGE         "@PACKAGE_NAME@"
+#define PACKAGE_NAME    "@PACKAGE_NAME@"
+#define VERSION         "@PACKAGE_VERSION@"
+#define PACKAGE_VERSION "@PACKAGE_VERSION@"
+#define PACKAGE_URL     "@PACKAGE_URL@"

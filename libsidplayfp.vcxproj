@@ -221,4 +221,18 @@
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\sidtune\sidplayer1.a65&quot; -Bin &quot;$(ProjectDir)src\sidtune\sidplayer1.bin&quot;" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\sidtune\sidplayer2.a65&quot; -Bin &quot;$(ProjectDir)src\sidtune\sidplayer2.bin&quot;" />
   </Target>
+  <!--
+    Generate the autotools-templated headers (sidplayfp/sidversion.h and the
+    package-identification config_version.h, included by config.h) from their
+    .in templates, with the version read from configure.ac. Keeps them in sync
+    with the submodule so a version bump needs no hand-edits. Incremental: runs
+    only when a template, configure.ac, or the generator script changes.
+  -->
+  <Target Name="GenerateBuildHeaders" BeforeTargets="ClCompile"
+          Inputs="$(ProjectDir)src\sidplayfp\sidversion.h.in;$(ProjectDir)config_version.h.in;$(ProjectDir)configure.ac;$(ProjectDir)tools\gen-header.ps1"
+          Outputs="$(ProjectDir)src\sidplayfp\sidversion.h;$(ProjectDir)config_version.h">
+    <Message Importance="high" Text="libsidplayfp: generating version/config headers from .in templates" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\gen-header.ps1&quot; -In &quot;$(ProjectDir)src\sidplayfp\sidversion.h.in&quot; -Out &quot;$(ProjectDir)src\sidplayfp\sidversion.h&quot; -ConfigureAc &quot;$(ProjectDir)configure.ac&quot;" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\gen-header.ps1&quot; -In &quot;$(ProjectDir)config_version.h.in&quot; -Out &quot;$(ProjectDir)config_version.h&quot; -ConfigureAc &quot;$(ProjectDir)configure.ac&quot;" />
+  </Target>
 </Project>
