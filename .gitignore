@@ -33,9 +33,6 @@ tests/*.trs
 libsidplayfp-*.tar.gz
 *build/
 
-!src/psiddrv.bin
-!src/sidtune/sidplayer1.bin
-!src/sidtune/sidplayer2.bin
 !src/sidplayfp/sidversion.h 
 
 ## Ignore Visual Studio temporary files, build results, and

@@ -205,4 +205,20 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <!--
+    Regenerate the 6502 driver images (psiddrv.bin, sidplayer1.bin,
+    sidplayer2.bin) from their .a65 sources using the vendored xa65 assembler
+    (tools/xa65). psiddrv.cpp / MUS.cpp #include these as C arrays. Incremental:
+    runs only when an .a65 source or xa65.exe is newer than the .bin outputs, so
+    it is a no-op on normal rebuilds. xa65.exe is produced by the xa65 project,
+    which libsidplayfp depends on (so it is built first), and lands in $(OutDir).
+  -->
+  <Target Name="GenerateSidBins" BeforeTargets="ClCompile"
+          Inputs="$(ProjectDir)src\psiddrv.a65;$(ProjectDir)src\sidtune\sidplayer1.a65;$(ProjectDir)src\sidtune\sidplayer2.a65;$(OutDir)xa65.exe"
+          Outputs="$(ProjectDir)src\psiddrv.bin;$(ProjectDir)src\sidtune\sidplayer1.bin;$(ProjectDir)src\sidtune\sidplayer2.bin">
+    <Message Importance="high" Text="xa65: regenerating SID driver .bin files from .a65 sources" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\psiddrv.a65&quot; -Bin &quot;$(ProjectDir)src\psiddrv.bin&quot;" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\sidtune\sidplayer1.a65&quot; -Bin &quot;$(ProjectDir)src\sidtune\sidplayer1.bin&quot;" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\sidtune\sidplayer2.a65&quot; -Bin &quot;$(ProjectDir)src\sidtune\sidplayer2.bin&quot;" />
+  </Target>
 </Project>
