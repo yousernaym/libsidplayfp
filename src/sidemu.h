@@ -123,6 +123,12 @@ public:
      */
     virtual void model(SidConfig::sid_model_t model, bool digiboost) = 0;
 
+    virtual bool getEnvelopeOutputs(uint8_t envelopes[3]) const
+    {
+        envelopes[0] = envelopes[1] = envelopes[2] = 0;
+        return false;
+    }
+
     /**
      * Set the sampling method.
      *

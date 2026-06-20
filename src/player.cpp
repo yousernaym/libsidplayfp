@@ -588,6 +588,14 @@ bool Player::getSidStatus(unsigned int sidNum, uint8_t regs[32])
     return true;
 }
 
+bool Player::getSidEnvelopes(unsigned int sidNum, uint8_t envelopes[3])
+{
+    if (sidNum >= m_chips.size())
+        return false;
+
+    return m_chips[sidNum]->getEnvelopeOutputs(envelopes);
+}
+
 int Player::getBufSize(unsigned int cycles)
 {
     if (!m_simpleMixer)
