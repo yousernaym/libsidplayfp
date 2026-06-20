@@ -67,27 +67,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <SpectreMitigation>Spectre</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <SpectreMitigation>Spectre</SpectreMitigation>
@@ -214,9 +214,7 @@
     it is a no-op on normal rebuilds. xa65.exe is produced by the xa65 project,
     which libsidplayfp depends on (so it is built first), and lands in $(OutDir).
   -->
-  <Target Name="GenerateSidBins" BeforeTargets="ClCompile"
-          Inputs="$(ProjectDir)src\psiddrv.a65;$(ProjectDir)src\sidtune\sidplayer1.a65;$(ProjectDir)src\sidtune\sidplayer2.a65;$(OutDir)xa65.exe"
-          Outputs="$(ProjectDir)src\psiddrv.bin;$(ProjectDir)src\sidtune\sidplayer1.bin;$(ProjectDir)src\sidtune\sidplayer2.bin">
+  <Target Name="GenerateSidBins" BeforeTargets="ClCompile" Inputs="$(ProjectDir)src\psiddrv.a65;$(ProjectDir)src\sidtune\sidplayer1.a65;$(ProjectDir)src\sidtune\sidplayer2.a65;$(OutDir)xa65.exe" Outputs="$(ProjectDir)src\psiddrv.bin;$(ProjectDir)src\sidtune\sidplayer1.bin;$(ProjectDir)src\sidtune\sidplayer2.bin">
     <Message Importance="high" Text="xa65: regenerating SID driver .bin files from .a65 sources" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\psiddrv.a65&quot; -Bin &quot;$(ProjectDir)src\psiddrv.bin&quot;" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\xa65\gen-bin.ps1&quot; -Xa &quot;$(OutDir)xa65.exe&quot; -A65 &quot;$(ProjectDir)src\sidtune\sidplayer1.a65&quot; -Bin &quot;$(ProjectDir)src\sidtune\sidplayer1.bin&quot;" />
@@ -229,9 +227,7 @@
     with the submodule so a version bump needs no hand-edits. Incremental: runs
     only when a template, configure.ac, or the generator script changes.
   -->
-  <Target Name="GenerateBuildHeaders" BeforeTargets="ClCompile"
-          Inputs="$(ProjectDir)src\sidplayfp\sidversion.h.in;$(ProjectDir)config_version.h.in;$(ProjectDir)configure.ac;$(ProjectDir)tools\gen-header.ps1"
-          Outputs="$(ProjectDir)src\sidplayfp\sidversion.h;$(ProjectDir)config_version.h">
+  <Target Name="GenerateBuildHeaders" BeforeTargets="ClCompile" Inputs="$(ProjectDir)src\sidplayfp\sidversion.h.in;$(ProjectDir)config_version.h.in;$(ProjectDir)configure.ac;$(ProjectDir)tools\gen-header.ps1" Outputs="$(ProjectDir)src\sidplayfp\sidversion.h;$(ProjectDir)config_version.h">
     <Message Importance="high" Text="libsidplayfp: generating version/config headers from .in templates" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\gen-header.ps1&quot; -In &quot;$(ProjectDir)src\sidplayfp\sidversion.h.in&quot; -Out &quot;$(ProjectDir)src\sidplayfp\sidversion.h&quot; -ConfigureAc &quot;$(ProjectDir)configure.ac&quot;" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)tools\gen-header.ps1&quot; -In &quot;$(ProjectDir)config_version.h.in&quot; -Out &quot;$(ProjectDir)config_version.h&quot; -ConfigureAc &quot;$(ProjectDir)configure.ac&quot;" />
