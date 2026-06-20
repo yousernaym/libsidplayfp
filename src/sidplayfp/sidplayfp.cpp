@@ -127,11 +127,6 @@ bool sidplayfp::getSidStatus(unsigned int sidNum, uint8_t regs[32])
     return sidplayer.getSidStatus(sidNum, regs);
 }
 
-bool sidplayfp::getSidEnvelopes(unsigned int sidNum, uint8_t envelopes[3])
-{
-    return sidplayer.getSidEnvelopes(sidNum, envelopes);
-}
-
 unsigned int sidplayfp::installedSIDs() const
 {
     return sidplayer.installedSIDs();

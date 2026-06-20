@@ -39,6 +39,7 @@
     <ClCompile Include="src\c64\**\*.cpp" />
     <ClCompile Include="src\utils\**\*.cpp" />
     <ClCompile Include="src\builders\residfp-builder\*.cpp" />
+    <ClCompile Include="src\vm-extensions\*.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />

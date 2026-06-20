@@ -157,7 +157,6 @@ public:
     uint_least16_t getCia1TimerA() const { return m_c64.getCia1TimerA(); }
 
     bool getSidStatus(unsigned int sidNum, uint8_t regs[32]);
-    bool getSidEnvelopes(unsigned int sidNum, uint8_t envelopes[3]);
 
     unsigned int installedSIDs() const { return m_chips.size(); }
 

@@ -226,14 +226,6 @@ public:
      */
     bool getSidStatus(unsigned int sidNum, uint8_t regs[32]);
 
-    /**
-     * Get the current SID envelope output for each voice.
-     *
-     * @param sidNum the SID chip, 0 for the first one, 1 for the second and 2 for the third.
-     * @param envelopes an array that will be filled with voice 1, 2, and 3 envelope values.
-     * @return false if the requested chip or builder doesn't support envelope snapshots.
-     */
-    bool getSidEnvelopes(unsigned int sidNum, uint8_t envelopes[3]);
 
     /**
      * Get the required size of the buffer for the number of cycles to run,

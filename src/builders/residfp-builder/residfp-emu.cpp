@@ -156,12 +156,6 @@ void reSIDfpEmu::model(SidConfig::sid_model_t model, bool digiboost)
     m_status = true;
 }
 
-bool reSIDfpEmu::getEnvelopeOutputs(uint8_t envelopes[3]) const
-{
-    m_sid.getEnvelopeOutputs(envelopes);
-    return true;
-}
-
 // Set the emulated SID combined waveforms
 void reSIDfpEmu::combinedWaveforms(SidConfig::sid_cw_t cws)
 {

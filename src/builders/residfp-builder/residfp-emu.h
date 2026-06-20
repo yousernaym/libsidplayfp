@@ -66,8 +66,6 @@ public:
 
     void model(SidConfig::sid_model_t model, bool digiboost) override;
 
-    bool getEnvelopeOutputs(uint8_t envelopes[3]) const override;
-
     // Specific to residfp
     void enableFilter(bool enable) { m_sid.enableFilter(enable); }
 
