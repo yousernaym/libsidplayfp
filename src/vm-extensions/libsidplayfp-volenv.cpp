@@ -37,5 +37,23 @@ namespace libsidplayfp
 		reSIDfp::vm_getEnvelopeOutputs(resid->m_sid, envelopes);
 		return true;
 	}
+
+	bool vm_getSidEnvelopeAttackStates(sidplayfp& engine, unsigned int sidNum, bool attack[3])
+	{
+		if (!attack)
+			return false;
+
+		std::fill(attack, attack + 3, false);
+
+		if (sidNum >= engine.sidplayer.m_chips.size())
+			return false;
+
+		reSIDfpEmu* resid = dynamic_cast<reSIDfpEmu*>(engine.sidplayer.m_chips[sidNum]);
+		if (!resid)
+			return false;
+
+		reSIDfp::vm_getEnvelopeAttackStates(resid->m_sid, attack);
+		return true;
+	}
 }
 
