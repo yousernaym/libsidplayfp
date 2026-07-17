@@ -72,6 +72,27 @@ protected:
     /// Flags for muted voices
     std::bitset<4> isMuted;
 
+    /// VM (Visual Music) addition: per-voice waveform filter for per-instrument
+    /// track rendering (0 = off). Unlike voice() muting, which masks *future*
+    /// control writes and therefore lags one write behind (inverting the result
+    /// on voices that alternate waveforms every frame), this decides per write
+    /// from the waveform bits being written. A non-matching write keeps the gate
+    /// (so the envelope stays identical to the full mix) but replaces the
+    /// waveform with test+triangle: test holds the accumulator at zero, so the
+    /// triangle outputs a constant zero DAC level. Merely stripping the waveform
+    /// would leave the DAC floating at the last output value, which the emulation
+    /// fades to zero after ~54000 cycles (6581) — an audible random-amplitude
+    /// click in the middle of every longer silenced stretch. Ring/sync only
+    /// affect this voice's own, now-silenced, output and are dropped.
+    uint8_t vmWaveformFilter[3] = {0, 0, 0};
+
+    uint8_t vmFilterControlWrite(unsigned int voice, uint8_t data) const
+    {
+        if (vmWaveformFilter[voice] != 0 && (data >> 4) != vmWaveformFilter[voice])
+            data = (data & 0x01) | 0x18;
+        return data;
+    }
+
     std::string m_error;
 
 protected:
@@ -117,6 +138,13 @@ public:
      * Enable/disable filter.
      */
     void filter(bool enable);
+
+    /**
+     * VM (Visual Music) addition: restrict a voice to one waveform combo
+     * (see vmWaveformFilter above). waveform = control-register bits 4-7
+     * (1 triangle .. 8 noise, combinable); 0 disables the filter.
+     */
+    void vm_setWaveformFilter(unsigned int voice, uint8_t waveform);
 
     /**
      * Set SID model.

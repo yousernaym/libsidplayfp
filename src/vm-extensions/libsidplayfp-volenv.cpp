@@ -55,5 +55,19 @@ namespace libsidplayfp
 		reSIDfp::vm_getEnvelopeAttackStates(resid->m_sid, attack);
 		return true;
 	}
+
+	bool vm_setSidWaveformFilter(sidplayfp& engine, unsigned int sidNum, uint8_t waveform)
+	{
+		if (sidNum >= engine.sidplayer.m_chips.size())
+			return false;
+
+		sidemu* emu = engine.sidplayer.m_chips[sidNum];
+		if (!emu)
+			return false;
+
+		for (unsigned int v = 0; v < 3; v++)
+			emu->vm_setWaveformFilter(v, waveform);
+		return true;
+	}
 }
 
