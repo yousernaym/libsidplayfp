@@ -37,15 +37,12 @@ void sidemu::writeReg(uint_least8_t addr, uint8_t data)
         // Ignore writes to control register to mute voices
         // Leave test/ring/sync bits untouched
         if (isMuted[0]) UNLIKELY data &= 0x0e;
-        else data = vmFilterControlWrite(0, data);
         break;
     case 0x0b:
         if (isMuted[1]) UNLIKELY data &= 0x0e;
-        else data = vmFilterControlWrite(1, data);
         break;
     case 0x12:
         if (isMuted[2]) UNLIKELY data &= 0x0e;
-        else data = vmFilterControlWrite(2, data);
         break;
     case 0x17:
         // Ignore writes to filter register to disable filter
@@ -66,13 +63,6 @@ void sidemu::voice(unsigned int voice, bool mute)
 {
     if (voice < 4) LIKELY
         isMuted[voice] = mute;
-}
-
-// VM (Visual Music) addition, see sidemu.h.
-void sidemu::vm_setWaveformFilter(unsigned int voice, uint8_t waveform)
-{
-    if (voice < 3)
-        vmWaveformFilter[voice] = waveform & 0x0f;
 }
 
 void sidemu::filter(bool enable)
